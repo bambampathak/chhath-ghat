@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+/* ========================================
+   Chhath Geet — Design System
+   ======================================== */
+
+@theme {
+  --color-chhath-orange: #E8863A;
+  --color-chhath-gold: #D4A845;
+  --color-chhath-deep: #1A0F0A;
+  --color-chhath-warm: #0D0907;
+  --color-chhath-ember: #B8562A;
+  --color-chhath-cream: #F5E6D3;
+  --color-chhath-muted: #8A7B6B;
+  --color-chhath-surface: rgba(232, 134, 58, 0.06);
+  --color-chhath-surface-hover: rgba(232, 134, 58, 0.12);
+  --color-chhath-border: rgba(232, 134, 58, 0.12);
+  --color-chhath-glow: rgba(232, 134, 58, 0.3);
+
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-devnagari: 'Rozha One', 'Yatra One', 'Martel', sans-serif;
+}
+
+/* ========================================
+   Base Styles
+   ======================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: #080504;
+  color: var(--color-chhath-cream);
+  min-height: 100vh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Slow vinyl spin animation */
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 12s linear infinite;
+}
+
+/* ========================================
+   Custom Scrollbar
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(232, 134, 58, 0.2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(232, 134, 58, 0.4);
+}
+
+/* ========================================
+   Selection
+   ======================================== */
+
+::selection {
+  background: rgba(232, 134, 58, 0.3);
+  color: #F5E6D3;
+}
+
+/* ========================================
+   Reduced Motion
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
