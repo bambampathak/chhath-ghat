@@ -20,6 +20,8 @@ async function connectDB() {
     cached.promise = mongoose
       .connect(process.env.MONGODB_URI, {
         bufferCommands: false,
+        serverSelectionTimeoutMS: 2500,
+        connectTimeoutMS: 2500,
       })
       .then((mongoose) => {
         console.log('MongoDB connected');
@@ -32,7 +34,11 @@ async function connectDB() {
       });
   }
 
-  cached.conn = await cached.promise;
+  try {
+    cached.conn = await cached.promise;
+  } catch (err) {
+    cached.conn = null;
+  }
   return cached.conn;
 }
 

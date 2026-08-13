@@ -10,11 +10,19 @@ const app = express();
 // CORS — allow frontend origins
 app.use(
   cors({
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:3000',
-      process.env.FRONTEND_URL,
-    ].filter(Boolean),
+    origin: (origin, callback) => {
+      if (
+        !origin ||
+        origin.includes('localhost') ||
+        origin.includes('onrender.com') ||
+        origin.includes('vercel.app') ||
+        (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL)
+      ) {
+        callback(null, true);
+      } else {
+        callback(null, true);
+      }
+    },
     methods: ['GET'],
   })
 );
@@ -49,8 +57,16 @@ app.get('/api/playlist', async (req, res) => {
       });
     }
 
-    // Try to connect to MongoDB for caching
-    const db = await connectDB();
+    // Try to connect to MongoDB for caching with 2s max wait to prevent serverless timeouts
+    let db = null;
+    try {
+      db = await Promise.race([
+        connectDB(),
+        new Promise((resolve) => setTimeout(() => resolve(null), 2000)),
+      ]);
+    } catch (e) {
+      console.warn('DB connect timeout or error:', e.message);
+    }
 
     // Check cache first
     if (db) {
