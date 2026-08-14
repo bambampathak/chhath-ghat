@@ -1,0 +1,17 @@
+{
+  "short_name": "छठ घाट",
+  "name": "छठ घाट — Chhath Ghat | Chhath Puja Songs",
+  "description": "Listen to sacred Chhath Ghat songs and devotional Chhath Puja geet online.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "512x512 192x192"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0a0604",
+  "theme_color": "#d97706",
+  "display": "standalone",
+  "orientation": "portrait"
+}

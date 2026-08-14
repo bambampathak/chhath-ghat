@@ -57,6 +57,16 @@ export default function App() {
     return playlistMeta.tracks.find((t) => t.position === currentIndex) || null;
   }, [playlistMeta.tracks, currentIndex]);
 
+  // Dynamically update document title for real-time browser SEO & track awareness
+  useEffect(() => {
+    const trackTitle = currentTrackMeta?.title || videoData?.title;
+    if (trackTitle && isPlaying) {
+      document.title = `▶ ${trackTitle} — छठ घाट | Chhath Puja Songs & Chhath Ghat Songs`;
+    } else {
+      document.title = 'छठ घाट — Chhath Ghat | Chhath Puja Songs & Chhath Ghat Songs (छठ गीत)';
+    }
+  }, [currentTrackMeta, videoData, isPlaying]);
+
   return (
     <>
       {/* Full-bleed Chhath Ghat artwork background */}

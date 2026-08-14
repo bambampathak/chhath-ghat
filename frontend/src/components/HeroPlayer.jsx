@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Play, Pause, SkipBack, SkipForward, Shuffle, Music2 } from 'lucide-react';
 import ProgressBar from './ProgressBar';
+import SeoSection from './SeoSection';
 
 /**
  * Music Player Bar matching reference design with thumbnail disc & complete controls
@@ -19,6 +20,7 @@ export default function HeroPlayer({
   isShuffle,
   controls,
   currentTrackMeta,
+  playlistTracks,
 }) {
   // Use backend metadata if available, fall back to IFrame API data & YouTube HQ thumbnail
   const title = currentTrackMeta?.title || videoData.title || 'Kaanch Hi Baans Ke Bahangiya';
@@ -38,13 +40,13 @@ export default function HeroPlayer({
       </div>
 
       {/* Main Screen Content */}
-      <div className="relative min-h-screen w-full flex flex-col items-center justify-between pb-32 pt-12 px-4 select-none">
+      <div className="relative min-h-screen w-full flex flex-col items-center justify-between pb-36 pt-16 px-4 select-none">
         {/* Center Hero Title — "छठ घाट" in Devanagari */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="text-center my-auto flex flex-col items-center"
+          className="text-center my-auto flex flex-col items-center w-full"
         >
           <h1
             className="text-7xl sm:text-9xl md:text-[11rem] font-extrabold tracking-normal text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.8)]"
@@ -56,6 +58,12 @@ export default function HeroPlayer({
           >
             छठ घाट
           </h1>
+          <span className="sr-only">
+            Chhath Ghat — Chhath Puja Songs | Chhath Ghat Songs | छठ घाट गीत
+          </span>
+
+          {/* Interactive & Crawlable SEO Section */}
+          <SeoSection tracks={playlistTracks} onSelectTrack={controls?.playIndex} />
         </motion.div>
 
         {/* Reference-Matched Floating Player Capsule (100% Transparent Background, 100% Opacity Controls) */}
@@ -80,7 +88,11 @@ export default function HeroPlayer({
               }}
             >
               {thumbnail ? (
-                <img src={thumbnail} alt="" className="w-full h-full object-cover scale-110" />
+                <img
+                  src={thumbnail}
+                  alt={`${title} — छठ घाट Chhath Puja Songs`}
+                  className="w-full h-full object-cover scale-110"
+                />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-amber-300/80">
                   <Music2 className="w-5 h-5" />
@@ -167,3 +179,4 @@ export default function HeroPlayer({
     </>
   );
 }
+

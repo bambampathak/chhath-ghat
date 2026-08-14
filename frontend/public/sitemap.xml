@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
     <url>
         <loc>https://chhath-ghat.onrender.com/</loc>
+        <lastmod>2026-08-14</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+        <xhtml:link rel="alternate" hreflang="hi" href="https://chhath-ghat.onrender.com/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://chhath-ghat.onrender.com/" />
+        <image:image>
+            <image:loc>https://chhath-ghat.onrender.com/chhath_ghat.png</image:loc>
+            <image:title>छठ घाट — Chhath Ghat | Chhath Puja Songs &amp; Chhath Ghat Songs</image:title>
+            <image:caption>Traditional Devotional Chhath Puja Songs celebrating Chhath Mahaparv</image:caption>
+        </image:image>
     </url>
-</urlset>   
+</urlset>
