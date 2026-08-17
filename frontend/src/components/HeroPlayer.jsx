@@ -40,16 +40,16 @@ export default function HeroPlayer({
       </div>
 
       {/* Main Screen Content */}
-      <div className="relative min-h-screen w-full flex flex-col items-center justify-between pb-36 pt-12 px-4 select-none">
+      <div className="relative min-h-[100dvh] w-full flex flex-col items-center justify-center pb-28 sm:pb-32 pt-8 sm:pt-12 px-4 select-none">
         {/* Center Hero Title — "छठ घाट" in Devanagari */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="text-center my-auto flex flex-col items-center w-full"
+          className="text-center my-auto flex flex-col items-center justify-center w-full"
         >
           <h1
-            className="text-7xl sm:text-9xl md:text-[11rem] font-extrabold tracking-normal text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.8)]"
+            className="text-6xl sm:text-9xl md:text-[11rem] font-extrabold tracking-normal text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.8)]"
             style={{
               fontFamily: 'var(--font-devnagari)',
               letterSpacing: '0.02em',
