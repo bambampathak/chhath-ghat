@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Pause, SkipBack, SkipForward, Shuffle, Music2, ListMusic } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Shuffle, Music2 } from 'lucide-react';
 import ProgressBar from './ProgressBar';
 import SeoSection from './SeoSection';
-import PlaylistDrawer from './PlaylistDrawer';
 import UpNext from './UpNext';
 
 /**
@@ -25,8 +23,6 @@ export default function HeroPlayer({
   currentTrackMeta,
   playlistTracks = [],
 }) {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
   // Use backend metadata if available, fall back to IFrame API data & YouTube HQ thumbnail
   const title = currentTrackMeta?.title || videoData.title || 'Kaanch Hi Baans Ke Bahangiya';
   const artist = currentTrackMeta?.channelTitle || videoData.author || 'Kalpana Patowary';
@@ -136,7 +132,7 @@ export default function HeroPlayer({
             />
           </div>
 
-          {/* Right: Controls (Shuffle, Previous, Play/Pause, Next, Playlist Drawer Button) */}
+          {/* Right: Controls (Shuffle, Previous, Play/Pause, Next) */}
           <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0 pr-0.5">
             {/* Shuffle */}
             <button
@@ -189,30 +185,8 @@ export default function HeroPlayer({
             >
               <SkipForward className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current text-white" />
             </button>
-
-            {/* Playlist Drawer Button */}
-            <button
-              onClick={() => setIsDrawerOpen(true)}
-              disabled={!isReady}
-              className="p-1 sm:p-1.5 text-amber-300/80 hover:text-amber-200 transition-colors"
-              title="Open Playlist"
-              aria-label="Open Playlist Drawer"
-            >
-              <ListMusic className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-            </button>
           </div>
         </motion.div>
-
-        {/* Slide-Up Playlist Drawer */}
-        <PlaylistDrawer
-          isOpen={isDrawerOpen}
-          onClose={() => setIsDrawerOpen(false)}
-          tracks={playlistTracks}
-          currentIndex={currentIndex}
-          currentTrackMeta={currentTrackMeta}
-          playlistLength={playlistLength}
-          onPlayAt={(idx) => controls.playAt(idx, playlistTracks)}
-        />
       </div>
     </>
   );
