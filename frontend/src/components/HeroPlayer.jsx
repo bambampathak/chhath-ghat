@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Pause, SkipBack, SkipForward, Shuffle, Music2 } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Shuffle, Music2, ListMusic } from 'lucide-react';
 import ProgressBar from './ProgressBar';
 import SeoSection from './SeoSection';
+import PlaylistDrawer from './PlaylistDrawer';
+import UpNext from './UpNext';
 
 /**
  * Music Player Bar matching reference design with thumbnail disc & complete controls
@@ -20,8 +23,10 @@ export default function HeroPlayer({
   isShuffle,
   controls,
   currentTrackMeta,
-  playlistTracks,
+  playlistTracks = [],
 }) {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
   // Use backend metadata if available, fall back to IFrame API data & YouTube HQ thumbnail
   const title = currentTrackMeta?.title || videoData.title || 'Kaanch Hi Baans Ke Bahangiya';
   const artist = currentTrackMeta?.channelTitle || videoData.author || 'Kalpana Patowary';
@@ -29,7 +34,7 @@ export default function HeroPlayer({
   const thumbnail =
     currentTrackMeta?.thumbnail || (videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : '');
 
-  const canPrevious = isReady && currentIndex > 0;
+  const canPrevious = isReady && (isShuffle || currentIndex > 0);
   const canNext = isReady && (isShuffle || currentIndex < playlistLength - 1);
 
   return (
@@ -40,7 +45,7 @@ export default function HeroPlayer({
       </div>
 
       {/* Main Screen Content */}
-      <div className="relative min-h-screen w-full flex flex-col items-center justify-between pb-36 pt-16 px-4 select-none">
+      <div className="relative min-h-screen w-full flex flex-col items-center justify-between pb-36 pt-12 px-4 select-none">
         {/* Center Hero Title — "छठ घाट" in Devanagari */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -63,18 +68,29 @@ export default function HeroPlayer({
           </span>
 
           {/* Interactive & Crawlable SEO Section */}
-          <SeoSection tracks={playlistTracks} onSelectTrack={controls?.playIndex} />
+          <SeoSection tracks={playlistTracks} />
+
+          {/* Up Next Preview Section */}
+          <UpNext
+            tracks={playlistTracks}
+            currentIndex={currentIndex}
+            currentVideoId={videoData?.video_id}
+            getPlaylistQueue={controls.getPlaylistQueue}
+            playlistLength={playlistLength}
+            onPlayAt={(idx) => controls.playAt(idx, playlistTracks)}
+            isReady={isReady}
+          />
         </motion.div>
 
-        {/* Reference-Matched Floating Player Capsule (100% Transparent Background, 100% Opacity Controls) */}
+        {/* Reference-Matched Floating Player Capsule */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
           className="fixed bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 w-[96%] max-w-3xl z-40 rounded-full px-5 sm:px-7 py-3 sm:py-3.5 flex items-center justify-between gap-3 sm:gap-5 border border-white/20 backdrop-blur-md overflow-hidden"
           style={{
-            background: 'transparent',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+            background: 'rgba(18, 10, 6, 0.85)',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
           }}
         >
           {/* Left: Disc Artwork with Song Thumbnail */}
@@ -120,7 +136,7 @@ export default function HeroPlayer({
             />
           </div>
 
-          {/* Right: Controls (Shuffle, Previous, Prominent White Play/Pause Circle, Next) */}
+          {/* Right: Controls (Shuffle, Previous, Play/Pause, Next, Playlist Drawer Button) */}
           <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0 pr-0.5">
             {/* Shuffle */}
             <button
@@ -173,8 +189,30 @@ export default function HeroPlayer({
             >
               <SkipForward className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current text-white" />
             </button>
+
+            {/* Playlist Drawer Button */}
+            <button
+              onClick={() => setIsDrawerOpen(true)}
+              disabled={!isReady}
+              className="p-1 sm:p-1.5 text-amber-300/80 hover:text-amber-200 transition-colors"
+              title="Open Playlist"
+              aria-label="Open Playlist Drawer"
+            >
+              <ListMusic className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+            </button>
           </div>
         </motion.div>
+
+        {/* Slide-Up Playlist Drawer */}
+        <PlaylistDrawer
+          isOpen={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+          tracks={playlistTracks}
+          currentIndex={currentIndex}
+          currentTrackMeta={currentTrackMeta}
+          playlistLength={playlistLength}
+          onPlayAt={(idx) => controls.playAt(idx, playlistTracks)}
+        />
       </div>
     </>
   );

@@ -189,10 +189,11 @@ export function useYouTubePlayer(playlistId) {
     try {
       const data = player.getVideoData?.();
       if (data) {
+        const videoId = data.video_id || data.video_Id || data.id || '';
         setVideoData({
           title: data.title || '',
           author: data.author || '',
-          video_id: data.video_id || '',
+          video_id: videoId,
         });
       }
       const dur = player.getDuration?.();
@@ -225,24 +226,32 @@ export function useYouTubePlayer(playlistId) {
           if (time !== undefined) setCurrentTime(time);
           if (dur) setDuration(dur);
 
-          // Also check if the index changed
-          const idx = playerRef.current.getPlaylistIndex?.();
-          if (idx !== undefined && idx !== null) {
-            setCurrentIndex((prev) => {
-              if (prev !== idx) {
-                // Track changed — update video info
-                updateVideoInfo(playerRef.current);
-                return idx;
+          // Check if current video changed
+          const data = playerRef.current.getVideoData?.();
+          const currentVideoId = data?.video_id || data?.video_Id || data?.id || '';
+          if (currentVideoId) {
+            setVideoData((prev) => {
+              if (prev.video_id !== currentVideoId || (data?.title && prev.title !== data.title)) {
+                return {
+                  title: data?.title || prev.title || '',
+                  author: data?.author || prev.author || '',
+                  video_id: currentVideoId,
+                };
               }
               return prev;
             });
+          }
+
+          const idx = playerRef.current.getPlaylistIndex?.();
+          if (idx !== undefined && idx !== null) {
+            setCurrentIndex((prev) => (prev !== idx ? idx : prev));
           }
         } catch (e) {
           // Ignore
         }
       }
     }, 250);
-  }, [updateVideoInfo]);
+  }, []);
 
   const stopProgressTracking = useCallback(() => {
     if (intervalRef.current) {
@@ -283,17 +292,8 @@ export function useYouTubePlayer(playlistId) {
   }, []);
 
   const next = useCallback(() => {
-    if (isShuffle && playlistLength > 1) {
-      // Pick a random track index different from current
-      let randomIndex = Math.floor(Math.random() * playlistLength);
-      if (randomIndex === currentIndex) {
-        randomIndex = (currentIndex + 1) % playlistLength;
-      }
-      playerRef.current?.playVideoAt?.(randomIndex);
-    } else {
-      playerRef.current?.nextVideo?.();
-    }
-  }, [isShuffle, playlistLength, currentIndex]);
+    playerRef.current?.nextVideo?.();
+  }, []);
 
   const previous = useCallback(() => {
     playerRef.current?.previousVideo?.();
@@ -303,8 +303,42 @@ export function useYouTubePlayer(playlistId) {
     playerRef.current?.seekTo?.(seconds, true);
   }, []);
 
-  const playAt = useCallback((index) => {
-    playerRef.current?.playVideoAt?.(index);
+  const playAt = useCallback((index, tracks) => {
+    if (!playerRef.current) return;
+
+    let targetVideoId = null;
+    if (typeof index === 'string') {
+      targetVideoId = index;
+    } else if (typeof index === 'number' && tracks && tracks[index]) {
+      targetVideoId = tracks[index].videoId;
+    }
+
+    if (targetVideoId) {
+      try {
+        const currentPlaylist = playerRef.current.getPlaylist?.();
+        if (Array.isArray(currentPlaylist) && currentPlaylist.length > 0) {
+          const ytIndex = currentPlaylist.indexOf(targetVideoId);
+          if (ytIndex !== -1) {
+            playerRef.current.playVideoAt(ytIndex);
+            return;
+          }
+        }
+      } catch (e) {
+        // Fallback below
+      }
+    }
+
+    if (typeof index === 'number') {
+      playerRef.current.playVideoAt?.(index);
+    }
+  }, []);
+
+  const getPlaylistQueue = useCallback(() => {
+    try {
+      return playerRef.current?.getPlaylist?.() || [];
+    } catch (e) {
+      return [];
+    }
   }, []);
 
   return {
@@ -329,6 +363,7 @@ export function useYouTubePlayer(playlistId) {
       previous,
       seekTo,
       playAt,
+      getPlaylistQueue,
     },
   };
 }

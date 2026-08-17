@@ -51,11 +51,15 @@ export default function App() {
     return () => { cancelled = true; };
   }, []);
 
-  // Find current track metadata from backend data
+  // Find current track metadata from backend data matching by videoId first, then index
   const currentTrackMeta = useMemo(() => {
     if (!playlistMeta.tracks || playlistMeta.tracks.length === 0) return null;
+    if (videoData?.video_id) {
+      const matched = playlistMeta.tracks.find((t) => t.videoId === videoData.video_id);
+      if (matched) return matched;
+    }
     return playlistMeta.tracks.find((t) => t.position === currentIndex) || null;
-  }, [playlistMeta.tracks, currentIndex]);
+  }, [playlistMeta.tracks, videoData?.video_id, currentIndex]);
 
   // Dynamically update document title for real-time browser SEO & track awareness
   useEffect(() => {

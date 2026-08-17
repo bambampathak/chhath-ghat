@@ -17,7 +17,7 @@ export default function PlayerControls({
   currentIndex,
   playlistLength,
 }) {
-  const canPrevious = isReady && currentIndex > 0;
+  const canPrevious = isReady && (isShuffle || currentIndex > 0);
   const canNext = isReady && (isShuffle || currentIndex < playlistLength - 1);
 
   return (

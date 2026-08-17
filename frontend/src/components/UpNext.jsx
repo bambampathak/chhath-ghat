@@ -6,28 +6,51 @@ import { ListMusic, Play } from 'lucide-react';
  * Clicking a track plays it directly
  */
 export default function UpNext({
-  tracks,
+  tracks = [],
   currentIndex,
+  currentVideoId,
+  getPlaylistQueue,
   playlistLength,
   onPlayAt,
   isReady,
 }) {
   if (!isReady || playlistLength === 0) return null;
 
-  // Build a list of next tracks (up to 3)
   const upNextItems = [];
-  for (let i = 1; i <= 3; i++) {
-    const idx = currentIndex + i;
-    if (idx < playlistLength) {
-      // Use backend metadata if available, otherwise show generic
-      const track = tracks.find((t) => t.position === idx);
-      upNextItems.push({
-        index: idx,
-        title: track?.title || `Track ${idx + 1}`,
-        channelTitle: track?.channelTitle || '',
-        thumbnail: track?.thumbnail || '',
-        duration: track?.duration || '',
-      });
+  const queue = getPlaylistQueue ? getPlaylistQueue() : [];
+
+  if (queue && queue.length > 0 && currentVideoId) {
+    const currentQueueIdx = queue.indexOf(currentVideoId);
+    const startIdx = currentQueueIdx !== -1 ? currentQueueIdx + 1 : currentIndex + 1;
+
+    for (let i = 0; i < 3; i++) {
+      const qIdx = startIdx + i;
+      if (qIdx < queue.length) {
+        const vId = queue[qIdx];
+        const track = tracks.find((t) => t.videoId === vId);
+        const origIdx = track ? track.position : qIdx;
+        upNextItems.push({
+          index: origIdx,
+          title: track?.title || `Track ${origIdx + 1}`,
+          channelTitle: track?.channelTitle || '',
+          thumbnail: track?.thumbnail || '',
+          duration: track?.duration || '',
+        });
+      }
+    }
+  } else {
+    for (let i = 1; i <= 3; i++) {
+      const idx = currentIndex + i;
+      if (idx < playlistLength) {
+        const track = tracks.find((t) => t.position === idx);
+        upNextItems.push({
+          index: idx,
+          title: track?.title || `Track ${idx + 1}`,
+          channelTitle: track?.channelTitle || '',
+          thumbnail: track?.thumbnail || '',
+          duration: track?.duration || '',
+        });
+      }
     }
   }
 
@@ -65,7 +88,7 @@ export default function UpNext({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 10 }}
               transition={{ duration: 0.3, delay: i * 0.08 }}
-              onClick={() => onPlayAt(item.index)}
+              onClick={() => onPlayAt(item.index, tracks)}
               className="w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
               style={{
                 background: 'var(--color-chhath-surface)',

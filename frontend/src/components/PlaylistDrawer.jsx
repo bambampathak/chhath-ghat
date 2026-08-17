@@ -9,6 +9,7 @@ export default function PlaylistDrawer({
   onClose,
   tracks,
   currentIndex,
+  currentTrackMeta,
   playlistLength,
   onPlayAt,
 }) {
@@ -66,13 +67,15 @@ export default function PlaylistDrawer({
             <div className="flex-1 overflow-y-auto px-4 py-3 space-y-1.5 custom-scrollbar">
               {tracks && tracks.length > 0 ? (
                 tracks.map((track, idx) => {
-                  const isCurrent = idx === currentIndex;
+                  const isCurrent = currentTrackMeta
+                    ? track.videoId === currentTrackMeta.videoId
+                    : idx === currentIndex;
                   return (
                     <motion.button
-                      key={track.id || idx}
+                      key={track.videoId || track.id || idx}
                       whileHover={{ x: 4 }}
                       onClick={() => {
-                        onPlayAt(idx);
+                        onPlayAt(idx, tracks);
                         onClose();
                       }}
                       className={`w-full flex items-center gap-4 px-4 py-3 rounded-xl text-left transition-all duration-200 ${
