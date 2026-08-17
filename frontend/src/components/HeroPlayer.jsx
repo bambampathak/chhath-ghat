@@ -40,13 +40,13 @@ export default function HeroPlayer({
       </div>
 
       {/* Main Screen Content */}
-      <div className="relative min-h-[100dvh] w-full flex flex-col items-center justify-center pb-28 sm:pb-36 pt-2 sm:pt-4 px-3 select-none">
-        {/* Center Hero Title — "छठ घाट" in Devanagari */}
+      <div className="relative min-h-[100dvh] w-full flex flex-col items-center justify-start pt-4 sm:pt-6 md:pt-8 pb-32 px-4 select-none">
+        {/* Top Hero Title — "छठ घाट" in Devanagari */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, ease: 'easeOut' }}
-          className="text-center my-auto -mt-10 sm:mt-0 flex flex-col items-center justify-center w-full"
+          className="text-center flex flex-col items-center justify-start w-full mt-1 sm:mt-2"
         >
           <h1
             className="text-7xl xs:text-8xl sm:text-9xl md:text-[12rem] lg:text-[13rem] font-extrabold tracking-normal text-white drop-shadow-[0_10px_35px_rgba(0,0,0,0.8)]"
