@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { Play, Pause, SkipBack, SkipForward, Shuffle, Music2 } from 'lucide-react';
 import ProgressBar from './ProgressBar';
 import SeoSection from './SeoSection';
-import UpNext from './UpNext';
 
 /**
  * Music Player Bar matching reference design with thumbnail disc & complete controls
@@ -65,17 +64,6 @@ export default function HeroPlayer({
 
           {/* Interactive & Crawlable SEO Section */}
           <SeoSection tracks={playlistTracks} />
-
-          {/* Up Next Preview Section */}
-          <UpNext
-            tracks={playlistTracks}
-            currentIndex={currentIndex}
-            currentVideoId={videoData?.video_id}
-            getPlaylistQueue={controls.getPlaylistQueue}
-            playlistLength={playlistLength}
-            onPlayAt={(idx) => controls.playAt(idx, playlistTracks)}
-            isReady={isReady}
-          />
         </motion.div>
 
         {/* Reference-Matched Floating Player Capsule */}
